@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BallController : MonoBehaviour
 {
+    private bool isInContact = false;
     public float ballSpeed = 2f;
     public Rigidbody sphereRigidbody;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -9,10 +10,19 @@ public class BallController : MonoBehaviour
     {
         
     }
-
+    void OnCollisionEnter(Collision collision){
+        isInContact = true;
+    }
+    void OnCollisionStay(Collision collision){
+        isInContact = true;
+    }
+    void OnCollisionExit(Collision collision){
+        isInContact = false;
+    }
     // Update is called once per frame
     void Update()
     {
+        Vector3 inputVector3 = Vector3.zero;
         Vector2 inputVector = Vector2.zero;
         if(Input.GetKey(KeyCode.W))
         {
@@ -34,7 +44,12 @@ public class BallController : MonoBehaviour
             inputVector += Vector2.left;
         }
 
-        Vector3 inputXZPlane = new Vector3(inputVector.x, 0, inputVector.y);
+        if(Input.GetKey(KeyCode.Space)&&(isInContact))
+        {
+            inputVector3 += new Vector3(0, 0, 5);
+        }
+
+        Vector3 inputXZPlane = new Vector3(inputVector.x, inputVector3.z, inputVector.y);
         sphereRigidbody.AddForce(inputXZPlane);
 
     
